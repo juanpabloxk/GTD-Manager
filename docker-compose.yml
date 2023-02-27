@@ -1,0 +1,16 @@
+version: '3.0'
+
+services:
+  gtd_notion_manager:
+    build: .
+    init: true
+    image: gtd_notion_manager
+    container_name: gtd_notion_manager
+    restart: unless-stopped
+    environment:
+      - TZ
+      - GTD_DATABASE_ID
+      - BEARER_SECRET
+      - DELETION_DAYS
+      - COMMENT_DAYS
+      - CRON_FREQUENCY_DAYS
