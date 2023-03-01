@@ -105,8 +105,7 @@ def set_marked_for_deletion(entry_id, marked):
     headers = {
         'Content-Type': 'application/json',
         'Notion-Version': '2022-02-22',
-        'Authorization': 'Bearer secret_phikHjvHtW7KuQTgSnyGAzxzUD40I48S1WMy4JgjjM9',
-        'Cookie': '__cf_bm=tAGkU1.59ptecBWyuHwP7RBE.xpeXWejhOJZu6U.JmY-1677462424-0-Afx7sB49lgvcMY2QsaAvf468APjl2v6WeE7/LU/6CQuxAk5TlVXXMdsBSBcztAeub/myMm0O75vFj6ABnfBJ8NI='
+        'Authorization': f'Bearer {bearer}'
     }
 
     response = requests.request("PATCH", url, headers=headers, data=payload)
