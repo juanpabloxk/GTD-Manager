@@ -1,4 +1,10 @@
-pytz
 requests
 python-dotenv
+
+# Dates
+pytz
 python-dateutil
+
+# PDF
+pdfkit
+jinja2

@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 from entry import Entry
 import datetime
 from pytz import timezone
+from pdf_generation.generate_pdf import generate_gtd_report
+from logging_tools import log
 
 DATES_FORMAT = '%Y-%m-%d_%H:%M:%S'
 
@@ -17,22 +19,27 @@ try:
     last_execution_date = TZ.localize(last_execution_date)
     CRON_FREQUENCY_DAYS = int(os.getenv('CRON_FREQUENCY_DAYS', default=10))
     time_delta = datetime.timedelta(days=CRON_FREQUENCY_DAYS)
+    fr.close()
 
     if last_execution_date > (today - time_delta):
+        log('Execution skipped, last execution was at',
+            last_execution_date.strftime(DATES_FORMAT))
         exit(0)
+
 except Exception as ex:
-    print('Error checking last execution', type(ex).__name__, ex)
+    log('Error checking last execution', type(ex).__name__, ex)
     exit(1)
 
-print('Script will be executed!')
+log('Script will be executed!')
 
 results = []
 query_result = driver.get_done_items()
+# print(query_result)
 
 try:
     results = query_result['results']
 except Exception as ex:
-    print('Error parsing query result', type(ex).__name__, ex)
+    log('Error parsing query result', type(ex).__name__, ex)
     exit(1)
 
 comment_days = int(os.environ.get('COMMENT_DAYS', default=5))
@@ -40,8 +47,9 @@ deletion_days = int(os.environ.get('DELETION_DAYS', default=10))
 
 all_entries = Entry.parse_many(results)
 entries_for_deletion = []
+entries_for_comment = []
 
-print(f'Processing {len(all_entries)} entries...')
+log(f'Processing {len(all_entries)} entries...')
 for entry in all_entries:
     if entry.between(deletion_days, comment_days) and not entry.marked_for_deletion:
         time_delta = datetime.timedelta(days=deletion_days)
@@ -50,10 +58,13 @@ for entry in all_entries:
         entry.mark_for_deletion(True)
         entry.add_comment_on_database(
             f"[MARKED] Will be deleted after {tentative_deletion_str}")
+        entries_for_comment.append(entry)
     elif entry.older_than(deletion_days):
         entries_for_deletion.append(entry)
 
-print(f'Deleting {len(entries_for_deletion)} entries...')
+log(f'Deleting {len(entries_for_deletion)} entries...')
+
+generate_gtd_report(entries_for_comment, entries_for_deletion, all_entries)
 
 for entry in entries_for_deletion:
     entry.delete_on_database()

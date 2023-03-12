@@ -4,6 +4,7 @@
 
 # Sensitive information
 .env*
+*.pdf
 README.md
 
 # Byte-compiled / optimized / DLL files

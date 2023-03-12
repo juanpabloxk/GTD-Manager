@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTD Report</title>
+  </head>
+
+  <body>
+    <h1>GTD Manager Report</h1>
+    <p class="emphazis">Generated at {{today_date}} &bull; {{all_items|length}} items total &bull;
+      {{commented_items|length}}
+      commented &bull; {{deleted_items|length}} deleted.</p>
+    <hr />
+    {% if commented_items|length %}
+    <h2>List of commented items</h2>
+    <ol>
+      {% for item in commented_items %}
+      {% include 'pdf_generation/badge.html' %}
+      {% endfor %}
+    </ol>
+    <hr />
+    {% endif %}
+    {% if deleted_items|length %}
+    <h2>List of deleted items</h2>
+    <ol>
+      {% for item in deleted_items %}
+      {% include 'pdf_generation/badge.html' %}
+      {% endfor %}
+    </ol>
+    <hr />
+    {% endif %}
+    <h2>List of all processed items</h2>
+    <ol>
+      {% for item in all_items %}
+      {% include 'pdf_generation/badge.html' %}
+      {% endfor %}
+    </ol>
+  </body>
+
+</html>
