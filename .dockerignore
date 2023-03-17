@@ -1,14 +1,18 @@
+# Sensitive information and DEV files
+.env*
+*.pdf
+README.md
+LICENSE
+**/mocks/
+**/archive/
+
 # Git
 **/.git
 .gitignore
 
-# Sensitive information
-.env*
-*.pdf
-README.md
 
 # Byte-compiled / optimized / DLL files
-__pycache__/
+**/__pycache__/
 *.py[cod]
 *$py.class
 

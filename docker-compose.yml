@@ -4,7 +4,6 @@ services:
   gtd_notion_manager:
     build: .
     init: true
-    user: '${UID}:${GID}'
     image: gtd_notion_manager
     container_name: gtd_notion_manager
     restart: unless-stopped

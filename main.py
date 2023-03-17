@@ -54,12 +54,15 @@ for entry in all_entries:
     if entry.between(deletion_days, comment_days) and not entry.marked_for_deletion:
         time_delta = datetime.timedelta(days=deletion_days)
         tentative_deletion = entry.last_edition_time + time_delta
-        tentative_deletion_str = tentative_deletion.strftime('%A. %d/%m/%Y')
+        tentative_deletion_str = tentative_deletion.strftime(
+            '%A. %d/%m/%Y at %HH:MM')
         entry.mark_for_deletion(True)
         entry.add_comment_on_database(
-            f"[MARKED] Will be deleted after {tentative_deletion_str}")
+            f"[Automatically Marked] Will be deleted after {tentative_deletion_str} ({deletion_days} days)")
         entries_for_comment.append(entry)
     elif entry.older_than(deletion_days):
+        entry.add_comment_on_database(
+            f"[Automatically Deleted] by GTD Manager")
         entries_for_deletion.append(entry)
 
 log(f'Deleting {len(entries_for_deletion)} entries...')

@@ -1,0 +1,26 @@
+# FROM python:3.10.8-alpine
+FROM surnet/alpine-python-wkhtmltopdf:3.10.6-0.12.6-full
+
+RUN echo -e "#!/bin/sh\ncd /app && python3 main.py" > /etc/periodic/15min/run_app &&\
+    chmod +rwx /etc/periodic/15min/run_app
+
+RUN apk add doas; \
+    adduser manager -D -G wheel; \
+    echo 'manager:gtdrocks!' | chpasswd; \
+    echo 'permit nopass :wheel as root' >> /etc/doas.d/doas.conf
+
+USER manager
+
+RUN doas mkdir /app
+
+RUN doas chown -R manager:wheel /app
+
+WORKDIR /app
+
+COPY requirements.txt /app/requirements.txt
+
+RUN pip install -r /app/requirements.txt
+
+COPY . .
+
+CMD ["doas", "crond","-f", "-l", "2"]
