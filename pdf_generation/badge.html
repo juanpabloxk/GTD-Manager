@@ -1,0 +1,8 @@
+<li class="d-flex justify-content-between align-items-center">
+  <span class="p-1 badge rounded-pill category category-{{ item.category.lower().replace(' ', '-') }}">{{item.category}}
+  </span>
+  <span>
+    (Last edited: {{item.last_edition_time}})&nbsp;
+    {{ item.title() }}
+  </span>
+</li>

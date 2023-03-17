@@ -3,6 +3,7 @@ from pytz import timezone
 import datetime
 import driver
 from dateutil import parser
+from logging_tools import log
 
 TZ = timezone(os.getenv('TZ', default='UTC'))
 
@@ -51,19 +52,20 @@ class Entry:
         try:
             self.last_edition_time = parser.parse(self.last_edited_time)
             self.marked_for_deletion = self.properties['Marked for deletion']['checkbox']
+            self.category = self.properties['Category']['select']['name']
         except Exception as ex:
-            print('ERROR parsing properties.', type(ex).__name__, ex)
+            log('ERROR parsing properties.', type(ex).__name__, ex)
 
     def mark_for_deletion(self, value):
         self.marked_for_deletion = driver.set_marked_for_deletion(
             self.id, value)
 
     def delete_on_database(self):
-        print('DELETING', self)
+        log('DELETING', self)
         self.deleted_on_database = driver.delete_entry(self.id)
 
     def add_comment_on_database(self, comment):
-        print('COMMENTING on', self, comment)
+        log('COMMENTING on', self, comment)
         return driver.comment_entry(self.id, comment)
 
     @classmethod
