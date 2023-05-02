@@ -22,8 +22,7 @@ try:
     fr.close()
 
     if last_execution_date > (today - time_delta):
-        log('Execution skipped, last execution was at',
-            last_execution_date.strftime(DATES_FORMAT))
+        # log('Execution skipped, last execution was at', last_execution_date.strftime(DATES_FORMAT))
         exit(0)
 
 except Exception as ex:
@@ -55,10 +54,10 @@ for entry in all_entries:
         time_delta = datetime.timedelta(days=deletion_days)
         tentative_deletion = entry.last_edition_time + time_delta
         tentative_deletion_str = tentative_deletion.strftime(
-            '%A. %d/%m/%Y at %HH:MM')
+            '%A %d of %B %Y at %H:%M')
         entry.mark_for_deletion(True)
         entry.add_comment_on_database(
-            f"[Automatically Marked] Will be deleted after {tentative_deletion_str} ({deletion_days} days)")
+            f"[Marked] Will be deleted after {tentative_deletion_str} ({deletion_days} days)")
         entries_for_comment.append(entry)
     elif entry.older_than(deletion_days):
         entry.add_comment_on_database(
